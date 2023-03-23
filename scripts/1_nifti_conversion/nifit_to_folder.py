@@ -2,6 +2,7 @@
 import glob
 import os
 import sys
+import json
 
 
 participant = sys.argv[1]
@@ -11,7 +12,7 @@ participant = sys.argv[1]
     Checks for func, beh, anat, and fmap directories
     Creates them, if they do not exist.
             Parameters:
-                    a) participant in f1XXXX format
+                    a) participant in XXXX format
                     b) directory up to and inclduding ses-1 
             Returns:
                     none
@@ -41,6 +42,7 @@ def rename_partic(participant, directory):
     print("in rename partic")
 
     #FMAPS
+    #FORMAT sub-3054_ses-1_dir-ap_run-1_epi.json
     files = glob.glob(directory + "/" + participant + "--SpinEchoFieldMap_AP*")
     ap_dict = {}
     for file in files:
@@ -52,7 +54,7 @@ def rename_partic(participant, directory):
     for scan, file in sorted(ap_dict.items()):
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_run-" + str(counter) + "_ap." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_dir-ap_run-" + str(counter) + "_epi." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
         counter = counter+1
@@ -69,7 +71,7 @@ def rename_partic(participant, directory):
     for scan, file in sorted(pa_dict.items()):
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_run-" + str(counter) + "_pa." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_dir-pa_run-" + str(counter) + "_epi." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
         counter = counter + 1
@@ -78,6 +80,11 @@ def rename_partic(participant, directory):
     for file in files:
         print(file)
         parts = file.split(".", 1)
+        if(parts[1] == "json"):
+            json_obj = json.load(open(file, 'r'))
+            json_obj['TaskName'] = 'mid'
+            with open(file, 'w') as f:
+                json.dump(json_obj, f)
         new_name = "sub-" + participant + "_ses-1_task-mid_run-01_bold." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
@@ -85,6 +92,11 @@ def rename_partic(participant, directory):
     for file in files:
         print(file)
         parts = file.split(".", 1)
+        if(parts[1] == "json"):
+            json_obj = json.load(open(file, 'r'))
+            json_obj['TaskName'] = 'mid'
+            with open(file, 'w') as f:
+                json.dump(json_obj, f)
         new_name = "sub-" + participant + "_ses-1_task-mid_run-02_bold." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name)  
@@ -94,14 +106,25 @@ def rename_partic(participant, directory):
     for file in files:
         print(file)
         parts = file.split(".", 1)
+        if(parts[1] == "json"):
+            json_obj = json.load(open(file, 'r'))
+            json_obj['TaskName'] = 'rest'
+            with open(file, 'w') as f:
+                json.dump(json_obj, f)
         new_name = "sub-" + participant + "_ses-1_task-rest_run-01_bold." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
+
     #REST2
     files = glob.glob(directory + "/" + participant + "--Resting_state_run_2*") 
     for file in files:
         print(file)
         parts = file.split(".", 1)
+        if(parts[1] == "json"):
+            json_obj = json.load(open(file, 'r'))
+            json_obj['TaskName'] = 'rest'
+            with open(file, 'w') as f:
+                json.dump(json_obj, f)
         new_name = "sub-" + participant + "_ses-1_task-rest_run-02_bold." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name)  
@@ -110,6 +133,11 @@ def rename_partic(participant, directory):
     for file in files:
         print(file)
         parts = file.split(".", 1)
+        if(parts[1] == "json"):
+            json_obj = json.load(open(file, 'r'))
+            json_obj['TaskName'] = 'rest'
+            with open(file, 'w') as f:
+                json.dump(json_obj, f)
         new_name = "sub-" + participant + "_ses-1_task-rest_run-03_bold." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
@@ -118,14 +146,14 @@ def rename_partic(participant, directory):
     for file in files:
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_dwi." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_run-1_dwi." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
     #T1W
     files = glob.glob(directory + "/" + participant + "--MPRAGE*") + glob.glob(directory + "/" + participant + "--T1w*")
     for file in files:
         print(file)
-        parts = file.split(".", 1)
+        parts = file.split(".", 2)
         new_name = "sub-" + participant + "_ses-1_run-1_T1w." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
@@ -162,7 +190,7 @@ def move_to_folders(participant, directory):
         parts = file.split("/")
         os.rename(file, directory + "/dwi/" + parts[-1])
     #move fmap files
-    fmap_files = glob.glob(directory + "/sub*")
+    fmap_files = glob.glob(directory + "/sub*epi*")
     for file in fmap_files:
         print(file)
         parts = file.split("/")
