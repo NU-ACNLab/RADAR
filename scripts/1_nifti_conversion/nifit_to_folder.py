@@ -4,7 +4,7 @@ import os
 import sys
 
 
- participant = pwsys.argv[1]
+participant = sys.argv[1]
 
         
 '''
@@ -47,16 +47,15 @@ def rename_partic(participant, directory):
         index1 = file.index("AP") + 5
         index2 = file.index("--e1")
         scan_number = int(file[index1:index2])
-        dict[scan_number] = file
-    ap_sorted = dict(sorted(ap_dict.items()))
+        ap_dict[scan_number] = file
     counter = 1
-    for scan, file in dict(sorted(ap_sorted.items()))
+    for scan, file in sorted(ap_dict.items()):
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_run-" + counter + "_ap." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_run-" + str(counter) + "_ap." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
-
+        counter = counter+1
 
     files = glob.glob(directory + "/" + participant + "--SpinEchoFieldMap_PA*")
     pa_dict = []
@@ -64,16 +63,15 @@ def rename_partic(participant, directory):
         index1 = file.index("PA") + 5
         index2 = file.index("--e1")
         scan_number = int(file[index1:index2])
-        dict[scan_number] = file
-    pa_sorted = dict(sorted(pa_dict.items()))
+        pa_dict[scan_number] = file
     counter = 1
-    for scan, file in dict(sorted(pa_sorted.items()))
+    for scan, file in sorted(pa_dict.items()):
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_run-" + counter + "_pa." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_run-" + str(counter) + "_pa." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
-
+        counter = counter + 1
     #MID
     files = glob.glob(directory + "/" + participant + "--MID1--*") + glob.glob(directory + "/" + participant + "--MID1*")
     for file in files:
@@ -108,7 +106,7 @@ def rename_partic(participant, directory):
         os.rename(file, directory + "/" + new_name)  
     #REST3
     files = glob.glob(directory + "/" + participant + "--Resting_state_run_3*") 
-    for file/ in files:
+    for file in files:
         print(file)
         parts = file.split(".", 1)
         new_name = "sub-" + participant + "_ses-1_task-rest_run-03_bold." + parts[1]
@@ -166,7 +164,7 @@ def move_to_folders(participant, directory):
 
 def main():
     key = participant
-    value = "/projects/b1108/studies/transitions/data/raw/neuroimaging/bids/rename/sub-" + participant + "/ses-1" 
+    value = "/projects/b1108/studies/RADAR/data/raw/neuroimaging/bids/sub-" + participant + "/ses-1" 
     makedir(key, value)
     rename_partic(key, value)
     move_to_folders(key, value)
