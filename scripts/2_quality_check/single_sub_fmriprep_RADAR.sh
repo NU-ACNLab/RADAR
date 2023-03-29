@@ -17,4 +17,4 @@ singularity run --cleanenv -B /projects/b1108:/projects/b1108 /projects/b1108/so
 /projects/b1108/studies/RADAR/data/raw/neuroimaging/bids \
 /projects/b1108/studies/RADAR/data/processed/neuroimaging/fmriprep/ \
 participant --participant-label ${1} --fs-license-file \
-/projects/b1108/software/freesurfer_license/license.txt -w /projects/b1108/studies/rise/data/processed/neuroimaging/fmriprep/work --skip_bids_validation
+/projects/b1108/software/freesurfer_license/license.txt -w /projects/b1108/studies/RADAR/data/processed/neuroimaging/fmriprep/work --skip_bids_validation
