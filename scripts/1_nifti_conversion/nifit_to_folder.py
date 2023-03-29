@@ -25,7 +25,7 @@ def makedir(participant, directory):
         os.mkdir(directory + "/anat/")
     if(not os.path.exists(directory + "/fmap/")):
         os.mkdir(directory + "/fmap/")
-    if(not os.path.exists(directory + "/dti/")):
+    if(not os.path.exists(directory + "/dwi/")):
         os.mkdir(directory + "/dwi/")
 
 '''
@@ -54,9 +54,10 @@ def rename_partic(participant, directory):
     for scan, file in sorted(ap_dict.items()):
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_dir-ap_run-" + str(counter) + "_epi." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_dir-ap_run-" + str(counter) + "_epi." 
         print(directory + "/" + new_name)
-        os.rename(file, directory + "/" + new_name) 
+        os.rename(parts[0] + ".json", directory + "/" + new_name + "json") 
+        os.rename(parts[0] + ".nii.gz", directory + "/" + new_name + "nii.gz") 
         counter = counter+1
 
     files = glob.glob(directory + "/" + participant + "--SpinEchoFieldMap_PA*")
@@ -71,9 +72,10 @@ def rename_partic(participant, directory):
     for scan, file in sorted(pa_dict.items()):
         print(file)
         parts = file.split(".", 1)
-        new_name = "sub-" + participant + "_ses-1_dir-pa_run-" + str(counter) + "_epi." + parts[1]
+        new_name = "sub-" + participant + "_ses-1_dir-pa_run-" + str(counter) + "_epi." 
         print(directory + "/" + new_name)
-        os.rename(file, directory + "/" + new_name) 
+        os.rename(parts[0] + ".json", directory + "/" + new_name + "json") 
+        os.rename(parts[0] + ".nii.gz", directory + "/" + new_name + "nii.gz") 
         counter = counter + 1
     #MID
     files = glob.glob(directory + "/" + participant + "--MID1--*") 
@@ -141,6 +143,19 @@ def rename_partic(participant, directory):
         new_name = "sub-" + participant + "_ses-1_task-rest_run-03_bold." + parts[1]
         print(directory + "/" + new_name)
         os.rename(file, directory + "/" + new_name) 
+    #REST4
+    files = glob.glob(directory + "/" + participant + "--Resting_state_run_4*") 
+    for file in files:
+        print(file)
+        parts = file.split(".", 1)
+        if(parts[1] == "json"):
+            json_obj = json.load(open(file, 'r'))
+            json_obj['TaskName'] = 'rest'
+            with open(file, 'w') as f:
+                json.dump(json_obj, f)
+        new_name = "sub-" + participant + "_ses-1_task-rest_run-04_bold." + parts[1]
+        print(directory + "/" + new_name)
+        os.rename(file, directory + "/" + new_name) 
     #DTI
     files = glob.glob(directory + "/" + participant + "--mb4_1k_2k_64dir_1pt5mm--s*")
     for file in files:
@@ -183,7 +198,7 @@ def move_to_folders(participant, directory):
         parts = file.split("/")
         os.rename(file, directory + "/anat/" + parts[-1])
     #move dwi
-    dwi_pattern = "sub-"+ participant + "_ses-1_dwi"
+    dwi_pattern = "sub-"+ participant + "_ses-1_run-1_dwi*"
     dwi_files = glob.glob(directory + "/" + dwi_pattern)
     for file in dwi_files:
         print(file)
